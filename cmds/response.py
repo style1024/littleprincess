@@ -54,8 +54,8 @@ class Response(commands.Cog):
         if '我沒了' in msg.content:
             await msg.channel.send("https://cdn.discordapp.com/attachments/856350096647389184/1100772307603050546/1440db856fb9e0cc14c86>")
 
-        if 'shiba' in msg.content:
-            res = requests.get('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+        if 'shiba' or '柴犬' in msg.content:
+            res = requests.get('https://dog.ceo/api/breed/shiba/images/random')
             pic = json.loads(res.text)
             await msg.channel.send(pic[0])
 
@@ -79,7 +79,7 @@ class Response(commands.Cog):
             pic = json.loads(res.text)
             await msg.channel.send(pic['message'])
 
-        if '貓' in msg.content:
+        if '貓' or 'cat' in msg.content:
             res = requests.get('https://api.thecatapi.com/v1/images/search')
             pic = json.loads(res.text)
             await msg.channel.send(pic[0]['url'])
