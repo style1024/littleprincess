@@ -8,7 +8,11 @@ import asyncio
 with open('setting.json', "r", encoding="utf8") as file:
   data = json.load(file)
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"), help_command=commands.DefaultHelpCommand(), intents=discord.Intents.all())
+intents = discord.Intents.default()
+intents.message_content = True 
+
+bot = commands.Bot(command_prefix="!", owner_id=371246823169458176)
+# bot = discord.Bot(command_prefix=commands.when_mentioned_or("!"), help_command=commands.DefaultHelpCommand(), intents=discord.Intents.all(), owner_id=371246823169458176)
 
 # 添加事件
 @bot.event
@@ -23,9 +27,19 @@ async def on_ready():
 
 
 @bot.slash_command()
+@commands.is_owner()
 async def reload(ctx, extension):
     bot.reload_extension(f'cmds.{extension}')
     await ctx.respond(f'Reloading {extension} done!')
+
+@bot.event
+async def on_application_command_error(ctx: discord.ApplicationContext, error: discord.DiscordException):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.respond("This command is currently on cooldown!")
+    elif isinstance(error, commands.NotOwner):
+        await ctx.respond("Sorry, only the bot owner can use this command")
+    else:
+        raise error  # Here we raise other errors to ensure they aren't ignored
 
 async def load():
   for filename in os.listdir('cmds'):

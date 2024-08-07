@@ -11,25 +11,26 @@ with open('setting.json', "r", encoding="utf8") as file:
 
 class Game(commands.Cog):
     
-    def __init__(self, bot): 
-      self.bot = bot
+    def __init__(self, bot: commands.Bot):
+        self.bot = bot
 
-    @commands.slash_command()
+    @commands.slash_command(description="圈圈叉叉遊戲")
     async def 圈叉(self, ctx: discord.ApplicationContext):
       """Starts a tic-tac-toe game with yourself."""
       await ctx.respond("Tic Tac Toe: X goes first", view=TicTacToe())
 
-    @commands.slash_command()
-    async def 抽卡(self, ctx, args):
-        if (int(args) > 10000):
+    @commands.slash_command(description="測驗歐非")
+    @discord.option("num", description="抽卡數量")
+    async def 抽卡(self, ctx, num):
+        if (int(num) > 10000):
             await ctx.respond("抽卡數不要超過1萬啦 :(")
             return
-        if (int(args) < 0):
+        if (int(num) < 0):
             await ctx.respond("小於0要怎麼抽卡 :(")
             return
         ur, sr, ssr, r = 0, 0, 0, 0
 
-        for n in range(0, int(args)):
+        for n in range(0, int(num)):
             card = random.choice(range(1, 101))
             if 1 <= card <= 54:
                 r += 1
@@ -47,28 +48,31 @@ class Game(commands.Cog):
                 {w}張        SR
                 {e}張        R
             '''
-        result = result.format(a=args, r=ur, q=ssr, w=sr, e=r)
+        result = result.format(a=num, r=ur, q=ssr, w=sr, e=r)
         await ctx.respond(result)
         if ssr + ur <= 0:
             await ctx.respond("https://img.ccyp.com/topic/201610/20161014134444236.png")
 
-    @commands.slash_command()
-    async def 抽獎(self, ctx, args):
+    @commands.slash_command(description="注意它不是抽卡，會標記人的")
+    @discord.option("num", description="得獎人數量")
+    async def 抽獎(self, ctx, num):
         memberList = []
         for user in ctx.guild.members:
             # 檢查用戶是否不是機器人且有權限查看當前頻道
             if not user.bot and ctx.channel.permissions_for(user).read_messages:
                 memberList.append(user.id)  ## 取得現有伺服器全部人的名字
-        for i in range(0, int(args)):
+        for i in range(0, int(num)):
             winner = np.random.choice(memberList)  ## 交給numpy抽獎
             memberList.remove(winner)  ## 移除中獎人
             await ctx.respond(f'恭喜 <@{winner}> 中獎')
 
-    @commands.slash_command()
+    @commands.slash_command(description="根據喜好給你老婆圖")
     async def 老婆(self, ctx):
         await ctx.respond("選擇你的選項:", view=DropdownView())
 
-    @commands.slash_command()
+    @commands.slash_command(description="猜拳遊戲")
+    @discord.option("user1", description="參賽選手1")
+    @discord.option("user2", description="參賽選手2")
     async def 猜拳(self, ctx, user1: discord.Member, user2: discord.Member):
       Embed = discord.Embed(title="猜拳遊戲", description="請選擇你要出什麼", color=0xf7ff8a)
       Embed.set_thumbnail(url="https://i.imgur.com/lyjRujt.gif")
@@ -307,5 +311,5 @@ class TicTacToe(discord.ui.View):
 
         return None
 
-def setup(bot):
+def setup(bot: commands.Bot):
   bot.add_cog(Game(bot))

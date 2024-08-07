@@ -7,11 +7,11 @@ with open('setting.json', "r", encoding="utf8") as file:
 
 class Default(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     #For Every Server
-    @commands.slash_command()
+    @commands.slash_command(description="Sends the bot's latency.")
     async def ping(self, ctx):
         await ctx.respond(f'機器人延遲{round(self.bot.latency * 1000)} 豪秒')
 
@@ -47,9 +47,10 @@ class Default(commands.Cog):
 
         await ctx.respond(embeds=[embed])  # Sends the embed
 
-    @commands.slash_command()
+    @commands.slash_command(name="num", description="刪除數量")
+    @commands.is_owner()
     async def clean(self, ctx, num: int):
-        await ctx.channel.purge(limit=num + 1)
+        await ctx.channel.purge(limit=num)
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Default(bot))

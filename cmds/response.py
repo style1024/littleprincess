@@ -8,7 +8,7 @@ import random
 
 class Response(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @commands.Cog.listener()
@@ -45,19 +45,10 @@ class Response(commands.Cog):
             else:
                 await msg.channel.send(f'{msg.author.mention} {tmp[1]}的運勢是 {luck}!!')
 
-        if '欠揍' in msg.content:
-            await msg.channel.send("https://media.discordapp.net/attachments/856350096647389184/1106126736116170843/708afc9a3aa73817adc>")
-
-        if '伺服器' in msg.content:
-            await msg.channel.send("https://cdn.discordapp.com/attachments/1007955034715213876/1098414454045167709/ezgif.com-video-to-g>")
-
-        if '我沒了' in msg.content:
-            await msg.channel.send("https://cdn.discordapp.com/attachments/856350096647389184/1100772307603050546/1440db856fb9e0cc14c86>")
-
-        if 'shiba' in msg.content:
-            res = requests.get('http://shibe.online/api/shibes?count=1&urls=true&httpsUrls=true')
+        if '柴犬' in msg.content:
+            res = requests.get('https://dog.ceo/api/breed/shiba/images/random')
             pic = json.loads(res.text)
-            await msg.channel.send(pic[0])
+            await msg.channel.send(pic['message'])
 
         if '吉娃娃' in msg.content:
             res = requests.get('https://dog.ceo/api/breed/chihuahua/images/random')
@@ -79,7 +70,7 @@ class Response(commands.Cog):
             pic = json.loads(res.text)
             await msg.channel.send(pic['message'])
 
-        if '貓' in msg.content:
+        if '貓'in msg.content:
             res = requests.get('https://api.thecatapi.com/v1/images/search')
             pic = json.loads(res.text)
             await msg.channel.send(pic[0]['url'])
@@ -87,11 +78,12 @@ class Response(commands.Cog):
         if 'huh' in msg.content:
             await msg.channel.send("https://media.tenor.com/7t63GFnoIPUAAAAd/huh-cat-huh-m4rtin.gif")
 
-        if '蛤' == msg.content:
-            await msg.channel.send("你在蛤一次試試看")
-
         if '急了' in msg.content:
             await msg.channel.send("https://memeprod.sgp1.digitaloceanspaces.com/user-wtf/1693521527021.jpg")
+
+        if '三小' in msg.content:
+            await msg.channel.send("https://memeprod.ap-south-1.linodeobjects.com/user-maker-thumbnail/2ee6a32602be36dc7655bc9bbcdda2fd.gif")
+
         
-def setup(bot):
+def setup(bot: commands.Bot):
   bot.add_cog(Response(bot))
